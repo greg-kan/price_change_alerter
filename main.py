@@ -30,7 +30,7 @@ currencies = {
 def tg_message(text):
     # 'https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates?offset=-1'
     try:
-        res = requests.get(f'https://api.telegram.org/bot{telegram_bot_params['token']}/sendMessage',
+        res = requests.get(f"https://api.telegram.org/bot{telegram_bot_params['token']}/sendMessage",
                            params=dict(chat_id = telegram_bot_params['chat_id'], text=text))
         logger.info(f"tg_message(): Telegram message sent: {res}")
     except Exception as e:

@@ -19,7 +19,7 @@ telegram_bot_params: Dict[Any, Any] = st.TELEGRAM_BOT_PARAMS
 
 SECONDS_IN_20_HOURS = 20*3600
 
-PERCENT_CURRENT = 0.1
+PERCENT_CURRENT = 0.5
 
 binance_ws_url = 'wss://fstream.binance.com/ws'
 

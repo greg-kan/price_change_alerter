@@ -3,7 +3,7 @@ from configparser import RawConfigParser
 from datetime import date
 import os
 
-DEBUG_MODE = True
+DEBUG_MODE = False
 
 APP_FOLDER = '.price_change_alerter'
 CONF_APP_FILE = 'application.ini'

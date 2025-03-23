@@ -4,7 +4,6 @@ import requests
 import time
 import threading
 from threading import Thread
-import argparse
 
 from websocket import WebSocketApp
 import settings as st
@@ -15,11 +14,13 @@ logger = Logger(__name__, st.APPLICATION_LOG, write_to_stdout=st.DEBUG_MODE).get
 
 telegram_bot_params: Dict[Any, Any] = st.TELEGRAM_BOT_PARAMS
 
+processing_params: Dict[Any, Any] = st.PROCESSING_PARAMS
+
 # alerts = []
 
 SECONDS_IN_20_HOURS = 20*3600
 
-PERCENT_CURRENT = 0.5
+MESSAGES_COUNTER: int = 0
 
 binance_ws_url = 'wss://fstream.binance.com/ws'
 
@@ -32,6 +33,7 @@ currencies = {
 
 def tg_message(text):
     # 'https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates?offset=-1'
+    logger.info(f"tg_message(): Trying to send Telegram message: {text}")
     try:
         res = requests.get(f"https://api.telegram.org/bot{telegram_bot_params['token']}/sendMessage",
                            params=dict(chat_id = telegram_bot_params['chat_id'], text=text))
@@ -40,12 +42,12 @@ def tg_message(text):
         logger.info(f"tg_message(): Failed to send Telegram message: {e}")
 
 
-def send_message(text):
-    logger.info(f"send_message(): Trying to send Telegram message: {text}")
+def send_telegram_message(text):
+    logger.info(f"send_telegram_message(): Trying to send Telegram message: {text}")
     thread = Thread(target = tg_message, args = (text, ))
     thread.start()
-    thread.join()
-    logger.info(f"send_message(): Thread finished")
+    # thread.join()
+    logger.info(f"send_message(): End OF Trying to send Telegram message: {text}")
 
 
 # def alert_down(symbol, price, data):
@@ -79,7 +81,7 @@ def alert_change(percent: float, data):
 
                 mess = f"{symbol} {become} {old_price} {price}"
                 logger.info(f"alert_change(): {mess}")
-                send_message(mess)
+                send_telegram_message(mess)
 
 
 def on_open(ws):
@@ -87,21 +89,32 @@ def on_open(ws):
     ws.send(json.dumps(sub_msg))
     mess = f"Connected on {time.ctime()}"
     logger.info(f"on_open(): {mess}")
-    send_message(mess)
+    send_telegram_message(mess)
 
 
 def on_message(ws, message):
-    logger.info(f"on_message(): New message")
+    global MESSAGES_COUNTER
+    MESSAGES_COUNTER += 1
+
+    change_percent = float(processing_params['change_percent'])
+
     data = json.loads(message)
-    alert_change(percent=PERCENT_CURRENT, data=data)
+    alert_change(percent=change_percent, data=data)
     # alert_down(' SOLUSDT', 134.00, data)
     # alert_up('SOLUSDT', 124.0, data)
+
+    alive_interval = int(processing_params['alive_interval'])
+
+    if MESSAGES_COUNTER % alive_interval == 0:
+        mess = f"I am alive. MESSAGES_COUNTER={MESSAGES_COUNTER}"
+        logger.info(f"on_message(): {mess}")
+        send_telegram_message(mess)
 
 
 def on_close(ws, close_status_code, close_msg):
     mess = f"Connection closed on {time.ctime()}: close_status_code: {close_status_code}, close_msg: {close_msg}"
     logger.info(f"on_close(): {mess}")
-    send_message(mess)
+    send_telegram_message(mess)
 
     time.sleep(5)
     connect_to_network(interval=SECONDS_IN_20_HOURS, url=binance_ws_url)
@@ -110,13 +123,13 @@ def on_close(ws, close_status_code, close_msg):
 def on_error(ws, e):
     mess = f"on_error: {e}"
     logger.info(f"on_error(): {mess}")
-    send_message(mess)
+    send_telegram_message(mess)
 
 
 def intentionally_close_socket(ws: WebSocketApp, interval: int):
     mess = f"Intentionally closing after {interval} seconds working"
     logger.info(f"intentionally_close_socket(): {mess}")
-    send_message(mess)
+    send_telegram_message(mess)
     ws.close()
 
 

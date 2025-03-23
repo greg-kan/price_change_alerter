@@ -8,6 +8,7 @@ DEBUG_MODE = False
 APP_FOLDER = '.price_change_alerter'
 CONF_APP_FILE = 'application.ini'
 CONF_APP_FILE_LOGGING_SECTION = 'logging'
+CONF_APP_FILE_PROCESSING_SECTION = 'processing'
 CONF_DB_FILE = 'database.ini'
 CONF_DB_FILE_POSTGRES_CONNECTION_SECTION = 'postgresql'
 CONF_TELEGRAM_FILE = 'telegram.ini'
@@ -41,6 +42,7 @@ def config(filename, section):
 
 
 LOGGING_PARAMS = config(app_conf_file, CONF_APP_FILE_LOGGING_SECTION)
+PROCESSING_PARAMS = config(app_conf_file, CONF_APP_FILE_PROCESSING_SECTION)
 DB_PARAMS = config(db_conf_file, CONF_DB_FILE_POSTGRES_CONNECTION_SECTION)
 TELEGRAM_BOT_PARAMS = config(telegram_conf_file, CONF_TELEGRAM_FILE_BOT_SECTION)
 APPLICATION_LOG = f"{Path(LOGGING_PARAMS['log_files_dir']) / LOGGING_PARAMS['app_log_file_prefix']}_{date.today()}.log"

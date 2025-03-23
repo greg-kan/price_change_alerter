@@ -14,6 +14,8 @@ logger = Logger(__name__, st.APPLICATION_LOG, write_to_stdout=st.DEBUG_MODE).get
 
 telegram_bot_params: Dict[Any, Any] = st.TELEGRAM_BOT_PARAMS
 
+symbols_params = st.SYMBOLS_PARAMS
+
 processing_params: Dict[Any, Any] = st.PROCESSING_PARAMS
 
 # alerts = []
@@ -24,12 +26,19 @@ MESSAGES_COUNTER: int = 0
 
 binance_ws_url = 'wss://fstream.binance.com/ws'
 
-symbols = ['BNBUSDT', 'ETHUSDT', 'SOLUSDT']
-currencies = {
-    'BNBUSDT': 0.0,
-    'ETHUSDT': 0.0,
-    'SOLUSDT': 0.0
-}
+symbols = symbols_params['symbols_list'].split(',')
+
+currencies: Dict[str, float] = dict()
+
+for item in symbols:
+    currencies[item] = 0.0
+
+
+# currencies = {
+#     'BNBUSDT': 0.0,
+#     'ETHUSDT': 0.0,
+#     'SOLUSDT': 0.0
+# }
 
 def tg_message(text):
     # 'https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates?offset=-1'
@@ -147,4 +156,5 @@ def connect_to_network(interval, url):  #  -> WebSocketApp | None
 
 
 if __name__ == "__main__":
+    # pass
     connect_to_network(interval=SECONDS_IN_20_HOURS, url=binance_ws_url)

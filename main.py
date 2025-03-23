@@ -4,6 +4,7 @@ import requests
 import time
 import threading
 from threading import Thread
+import argparse
 
 from websocket import WebSocketApp
 import settings as st
@@ -17,6 +18,8 @@ telegram_bot_params: Dict[Any, Any] = st.TELEGRAM_BOT_PARAMS
 # alerts = []
 
 SECONDS_IN_20_HOURS = 20*3600
+
+PERCENT_CURRENT = 0.1
 
 binance_ws_url = 'wss://fstream.binance.com/ws'
 
@@ -88,9 +91,9 @@ def on_open(ws):
 
 
 def on_message(ws, message):
-    # logger.info(f"on_message(): New message")
+    logger.info(f"on_message(): New message")
     data = json.loads(message)
-    alert_change(1, data)
+    alert_change(percent=PERCENT_CURRENT, data=data)
     # alert_down(' SOLUSDT', 134.00, data)
     # alert_up('SOLUSDT', 124.0, data)
 

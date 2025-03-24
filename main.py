@@ -34,12 +34,6 @@ for item in symbols:
     currencies[item] = 0.0
 
 
-# currencies = {
-#     'BNBUSDT': 0.0,
-#     'ETHUSDT': 0.0,
-#     'SOLUSDT': 0.0
-# }
-
 def tg_message(text):
     # 'https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates?offset=-1'
     logger.info(f"tg_message(): Trying to send Telegram message: {text}")

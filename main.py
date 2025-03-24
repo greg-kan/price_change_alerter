@@ -10,6 +10,8 @@ import settings as st
 from logger import Logger
 from typing import Dict, Any
 
+IDENT_STR = "BINANCE PRICE CHANGING ALERTER"
+
 logger = Logger(__name__, st.APPLICATION_LOG, write_to_stdout=st.DEBUG_MODE).get()
 
 telegram_bot_params: Dict[Any, Any] = st.TELEGRAM_BOT_PARAMS
@@ -47,7 +49,7 @@ def tg_message(text):
 
 def send_telegram_message(text):
     logger.info(f"send_telegram_message(): Trying to send Telegram message: {text}")
-    thread = Thread(target = tg_message, args = (text, ))
+    thread = Thread(target = tg_message, args = (f"{IDENT_STR}:: {text}", ))
     thread.start()
     # thread.join()
     logger.info(f"send_message(): End OF Trying to send Telegram message: {text}")

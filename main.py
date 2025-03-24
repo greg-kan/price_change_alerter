@@ -124,7 +124,7 @@ def on_close(ws, close_status_code, close_msg):
 
 
 def on_error(ws, e):
-    mess = f"on_error: {e}"
+    mess = f"error: {e}"
     logger.info(f"on_error(): {mess}")
     send_telegram_message(mess)
 

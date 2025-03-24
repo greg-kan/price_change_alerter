@@ -26,11 +26,11 @@ MESSAGES_COUNTER: int = 0
 
 binance_ws_url = 'wss://fstream.binance.com/ws'
 
-symbols = symbols_params['symbols_list'].split(',')
+symbols_list = symbols_params['symbols_list'].split(',')
 
 currencies: Dict[str, float] = dict()
 
-for item in symbols:
+for item in symbols_list:
     currencies[item] = 0.0
 
 
